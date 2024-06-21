@@ -17,13 +17,14 @@ import Wrapper from '../assets/DashboardWrapper/Sidebar';
 import {
   FaEdit,
   FaHome,
+  FaIdCard,
   FaReceipt,
   FaServicestack,
   FaTimes,
 } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../features/user/userSlice';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FiSettings } from 'react-icons/fi';
 
 const Sidebar = ({ onClick, onClick2 }) => {
@@ -109,6 +110,10 @@ const Sidebar = ({ onClick, onClick2 }) => {
             ) : (
               ''
             )}
+            <li>
+              <FaIdCard className="service" />
+              <a href="/dashboard/cards">Card</a>
+            </li>
 
             <li>
               <FaReceipt className="service" />
@@ -132,6 +137,23 @@ const Sidebar = ({ onClick, onClick2 }) => {
             ) : (
               ''
             )}
+            {user.role === 'admin' || user.role === 'owner' ? (
+              <li>
+                <FaEdit className="service" />
+                <a href="/dashboard/changePassword">Edit Password</a>
+              </li>
+            ) : (
+              ''
+            )}
+
+            {/* {user.role === 'admin' || user.role === 'owner' ? (
+              <li>
+                <FaEdit className="service" />
+                <a href="/dashboard/delete">Delete Items</a>
+              </li>
+            ) : (
+              ''
+            )} */}
           </ul>
 
           <div className="power" onClick={handleLogout}>

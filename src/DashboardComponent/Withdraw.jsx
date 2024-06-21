@@ -40,17 +40,20 @@ export const action =
       }, 3000);
       return null;
     } catch (error) {
-      const errorMessage =
-        error?.resp?.data?.msg || 'please double check your credentials';
-      console.log(errorMessage);
-      alert.innerHTML = errorMessage;
-      alert.style.background = 'var(--clr-primary-8)';
+      const errorMessage = error.resp.data.msg || 'Error';
+      alert.textContent = errorMessage;
+      alert.style.textAlign = 'center';
+      alert.style.color = 'var(--clr-primary-7)';
+      alert.style.background = 'rgba(0,0,0,0.7)';
+
       setTimeout(() => {
-        alert.innerHTML = '';
+        alert.textContent = ``;
+        alert.style.display = 'hidden';
         alert.style.background = 'none';
+        alert.style.background = 'transparent';
       }, 3000);
 
-      return null;
+      return redirect('dashboard/withdraw');
     }
   };
 const Withdraw = () => {
@@ -231,22 +234,24 @@ then close all select boxes: */
 
           <article className="to">
             <div>
-              <h4>Transfer To:</h4>
+              <h4></h4>
               <FormInput
                 placeholder="Beneficiary Account Number"
                 name="accountNumber"
                 id="acc"
+                label="Account Number"
               />
               <FormInput
                 name="accountName"
                 id="senderName"
                 placeholder="Account Name"
+                label="Account Name"
               />
             </div>
           </article>
 
           <span className="label" style={{ marginTop: '2rem' }}>
-            To
+            Select Account to withdraw From
           </span>
           <div className="custom-select">
             <select name="user" className="">

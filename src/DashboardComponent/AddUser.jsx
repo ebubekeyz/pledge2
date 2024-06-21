@@ -54,14 +54,17 @@ export const action =
       }, 3000);
       return null;
     } catch (error) {
-      console.log(error);
-      const errorMessage =
-        error?.resp?.data?.error?.message || 'Something went wrong';
-      alert.innerHTML = errorMessage;
-      alert.style.background = 'var(--clr-primary-8)';
+      const errorMessage = error.resp.data.msg || 'Error';
+      alert.textContent = errorMessage;
+      alert.style.textAlign = 'center';
+      alert.style.color = 'var(--clr-primary-7)';
+      alert.style.background = 'rgba(0,0,0,0.7)';
+
       setTimeout(() => {
-        alert.innerHTML = '';
+        alert.textContent = ``;
+        alert.style.display = 'hidden';
         alert.style.background = 'none';
+        alert.style.background = 'transparent';
       }, 3000);
       return null;
     }
@@ -170,12 +173,12 @@ then close all select boxes: */
     process.env.NODE_ENV !== 'production'
       ? 'http://localhost:7000'
       : 'https://pledgebank.onrender.com';
-  // k
+
   return (
     <Wrapper>
-      <div className="container" style={{ marginBottom: '4rem' }}>
+      <div className="container" style={{ margin: '2rem 0' }}>
         <div className="form-alert"></div>
-        <h4>Upload Passport</h4>
+        <h4>Add User</h4>
         <Form method="post" encType="multipart/form-data">
           <FormInput type="text" label="First Name" name="firstName" />
           <FormInput type="text" label="Last Name" name="lastName" />

@@ -1,55 +1,9 @@
-import { Form, useLoaderData } from 'react-router-dom';
-import { FormInput, SubmitBtn } from '../components';
+import { useEffect, useState } from 'react';
+import Wrapper from '../assets/DashboardWrapper/Transact';
+import { useSelector } from 'react-redux';
 import { customFetch } from '../utils';
-import Wrapper from '../assets/DashboardWrapper/SetTransferDetails';
-import { useEffect } from 'react';
 
-export const action =
-  (store) =>
-  async ({ request }) => {
-    const { user } = store.getState().userState;
-    const alert = document.querySelector('.form-alert');
-
-    const formData = await request.formData();
-    const data = Object.fromEntries(formData);
-    const account = store.getState().userState.account;
-
-    const id = Object.values(account)[0]._id;
-    console.log(id);
-    try {
-      const resp = await customFetch.patch(`/account/${id}`, data, {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
-
-      alert.innerHTML = 'Update Successful';
-      alert.style.background = 'var(--clr-primary-8)';
-      setTimeout(() => {
-        alert.innerHTML = '';
-        alert.style.background = 'none';
-      }, 3000);
-
-      return null;
-    } catch (error) {
-      const errorMessage = error.resp.data.msg || 'Error';
-      alert.textContent = errorMessage;
-      alert.style.textAlign = 'center';
-      alert.style.color = 'var(--clr-primary-7)';
-      alert.style.background = 'rgba(0,0,0,0.7)';
-
-      setTimeout(() => {
-        alert.textContent = ``;
-        alert.style.display = 'hidden';
-        alert.style.background = 'none';
-        alert.style.background = 'transparent';
-      }, 3000);
-
-      return null;
-    }
-  };
-
-const SetTransferDetails = () => {
+const Delete = () => {
   const select = () => {
     let x, i, j, l, ll, selElmnt, a, b, c;
     /* Look for any elements with the class "custom-select": */
@@ -133,57 +87,99 @@ const SetTransferDetails = () => {
       }
     }
 
-    /* If the user clicks anywhere outside the select box,
-then close all select boxes: */
     document.addEventListener('click', closeAllSelect);
   };
 
-  //   window.addEventListener('DOMContentLoaded', () => {
-  //     select();
-  //   });
   useEffect(() => {
     select();
   }, []);
+
+  const { user, allUsers } = useSelector((state) => state.userState);
+  const [submitting, setSubmitting] = useState('Delete');
+  const [user1, setUser1] = useState({
+    id: '',
+  });
+
+  const deleteSingleUser = async (e) => {
+    const formAlert = document.querySelector('.form-alert');
+    e.preventDefault();
+    setSubmitting('Deleting User ....');
+
+    console.log(e.target.user2.value);
+
+    setUser1({
+      id: e.target.user2.value,
+    });
+    try {
+      const resp = await customFetch.delete(`/auth/${user1.id}`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+
+      setSubmitting('User Deleted');
+    } catch (error) {
+      console.log(error);
+      setSubmitting('Delete');
+      formAlert.textContent = 'Error';
+      formAlert.style.textAlign = 'center';
+      formAlert.style.color = 'var(--clr-primary-7)';
+      formAlert.style.background = 'rgba(0,0,0,0.7)';
+
+      setTimeout(() => {
+        formAlert.textContent = ``;
+        formAlert.style.display = 'hidden';
+        formAlert.style.background = 'none';
+        formAlert.style.background = 'transparent';
+      }, 3000);
+    }
+  };
+
   return (
     <Wrapper>
-      <div className="form">
-        <h4>Edit Transfer Details</h4>
+      <div>
         <div className="form-alert"></div>
-        <Form method="patch">
-          <FormInput type="text" name="name" placeholder="Account Name" />
-          <FormInput
-            type="text"
-            name="accountNumber"
-            placeholder="Account Number"
-          />
-          <FormInput
-            type="text"
-            name="pin"
-            placeholder="Enter your transfer pin"
-          />
-          <div className="custom-select">
-            <select name="bank" id="ms">
-              <option value="Choose Bank">Choose Bank</option>
-              <option value="Bank Of America">Bank Of America</option>
-              <option value="Capital One">Capital One</option>
-              <option value="Chase Bank (Jp Morgan Chase)">
-                Chase Bank (Jp Morgan Chase)
-              </option>
-              <option value="Citibank">Citibank</option>
-              <option value="Fifth Third Bank">Fifth Third Bank</option>
-              <option value="HSBC">HSBC</option>
-              <option value="PNC Bank">PNC Bank</option>
-              <option value="Santander">Santander</option>
-              <option value="Truist Bank">Truist Bank</option>
-              <option value="U.S. Bancorp">U.S. Bancorp</option>
-              <option value="USAA">USAA</option>
-              <option value="Wells Fargo Bank">Wells Fargo Bank</option>
-            </select>
+        <div className="transact">
+          <div className="sub-menu">
+            <div className="editAccount">
+              <h4>Delete Single User</h4>
+            </div>
           </div>
-          <SubmitBtn text="update" />
-        </Form>
+          <form onSubmit={deleteSingleUser} className="transfer">
+            <div className="inner-transfer-cont">
+              <div className="details">
+                {/* <span className="label">Select User you want to Delete</span> */}
+                <div className="custom-select">
+                  <select name="user2" onChange={deleteSingleUser} className="">
+                    {Object.values(allUsers).map((item) => {
+                      const { _id, firstName, lastName } = item;
+                      return (
+                        <option key={_id} value={_id}>
+                          {firstName} {lastName}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+              </div>
+
+              <div className="approve">
+                <button
+                  type="submit"
+                  className="btn"
+                  style={{
+                    background: 'var(--red-dark)',
+                    color: 'var(--clr-white)',
+                  }}
+                >
+                  {submitting}
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
     </Wrapper>
   );
 };
-export default SetTransferDetails;
+export default Delete;

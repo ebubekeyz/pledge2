@@ -67,6 +67,7 @@ const Navbar = ({ onClick }) => {
 
     popup.style.display = 'none';
   };
+
   return (
     <Wrapper>
       <nav onClick={onClick} className="nav" id="nav">
@@ -84,9 +85,9 @@ const Navbar = ({ onClick }) => {
           {/* nav-links  */}
           <div className="pass-ico">
             {' '}
-            <a
+            <Link
               onClick={clickNotice}
-              href="/dashboard/notification"
+              to="/dashboard/notification"
               className="nav-links"
             >
               <FaBell
@@ -94,15 +95,15 @@ const Navbar = ({ onClick }) => {
                 style={{ cursor: 'pointer', color: 'black' }}
               />
               <sup className="num">{num}</sup>
-            </a>
+            </Link>
             {user.role === 'admin' || user.role === 'owner' ? (
-              <a href="/dashboard/passport" className="passport">
+              <Link to="/dashboard/passport" className="passport">
                 <img
                   src={`${pass}${passport}`}
                   alt="passport"
                   className="pass"
                 />
-              </a>
+              </Link>
             ) : (
               <div className="passport">
                 <img
@@ -122,13 +123,13 @@ const Navbar = ({ onClick }) => {
             </div>
             <h4>New Message</h4>
             <img src="/envelope.svg" alt="envelope" className="envelope" />
-            <a
-              href={`${url}/dashboard/notification`}
+            <Link
+              to={`${url}/dashboard/notification`}
               className="btn envelope-link"
               onClick={clickNotice}
             >
               Read
-            </a>
+            </Link>
           </div>
         ) : (
           ''

@@ -7,6 +7,7 @@ import {
   HomeLayout,
   Landing,
   Login,
+  PasswordReset,
   Privacy,
   Projects,
   Register,
@@ -20,7 +21,12 @@ import { store } from './store';
 
 import { loader as SingleBlogLoader } from './pages/SingleBlog';
 import { loader as UpdateUsersLoader } from './DashboardPages/UpdateUsers';
+import ChangePassword, {
+  loader as ChangePasswordLoader,
+} from './DashboardPages/ChangePassword';
 import { loader as WithdrawLoader } from './DashboardPages/Withdraw';
+import { loader as CardsLoader } from './DashboardPages/Cards';
+import { loader as DeleteLoader } from './DashboardPages/Delete';
 import { loader as AddUserLoader } from './DashboardPages/AddUser';
 import Passport, { loader as PassportLoader } from './DashboardPages/Passport';
 import { loader as UsersLoader } from './DashboardPages/Users';
@@ -44,6 +50,7 @@ import AccountInfo, {
 import Security, { loader as SecurityLoader } from './DashboardPages/Security';
 
 import { action as SendMoneyAction } from './DashboardComponent/SendMoney';
+import { action as ChangePasswordAction } from './DashboardComponent/ChangePassword';
 import { action as WithdrawAction } from './DashboardComponent/Withdraw';
 import { action as AddUserAction } from './DashboardComponent/AddUser';
 import { action as UpdateUsersAction } from './DashboardComponent/UpdateUsers';
@@ -53,6 +60,7 @@ import { action as PassportAction } from './DashboardComponent/Passport';
 import { action as NotificationMessageAction } from './DashboardComponent/Notification';
 import { action as SetTransferDetailsAction } from './DashboardComponent/SetTransferDetails';
 import { action as LoginAction } from './pages/Login';
+import { action as PasswordResetAction } from './pages/PasswordReset';
 import { action as AccountAction } from './DashboardComponent/Account';
 import { action as SecurityAction } from './DashboardComponent/Security';
 import { action as RegisterAction } from './pages/Register';
@@ -81,6 +89,8 @@ import {
   UpdateUsers,
   AddUser,
   Withdraw,
+  Delete,
+  Cards,
 } from './DashboardPages';
 
 import { action as RequestAction } from './pages/Request';
@@ -97,6 +107,7 @@ import {
   calculateAllUsers,
   loadAllWithdrawal,
   loadAllDeposit,
+  patchBalance,
 } from './features/user/userSlice';
 import { loadWithdraw } from './features/user/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -160,6 +171,11 @@ const router = createBrowserRouter([
     action: LoginAction(store),
   },
   {
+    path: 'passwordReset',
+    element: <PasswordReset />,
+    action: PasswordResetAction,
+  },
+  {
     path: 'Register',
     element: <Register />,
     action: RegisterAction(store),
@@ -220,6 +236,12 @@ const router = createBrowserRouter([
         action: UpdateWithdrawalAction(store),
       },
       {
+        path: '/dashboard/changePassword',
+        element: <ChangePassword />,
+        loader: ChangePasswordLoader(store),
+        action: ChangePasswordAction(store),
+      },
+      {
         path: '/dashboard/set-transfer-details',
         element: <SetTransferDetails />,
         loader: SetTransferDetailsLoader(store),
@@ -251,11 +273,21 @@ const router = createBrowserRouter([
         loader: WithdrawLoader(store),
         action: WithdrawAction(store),
       },
+      {
+        path: '/dashboard/delete',
+        element: <Delete />,
+        loader: DeleteLoader(store),
+      },
 
       {
         path: '/dashboard/notification',
         element: <Notification />,
         loader: NotificationLoader(store),
+      },
+      {
+        path: '/dashboard/cards',
+        element: <Cards />,
+        loader: CardsLoader(store),
       },
       {
         path: '/dashboard/siteMap',
@@ -305,6 +337,7 @@ const App = () => {
     dispatch(calculateNotification());
     dispatch(calculateAllUsers());
     dispatch(loadAllWithdrawal());
+    dispatch(patchBalance());
   }, [user]);
   return (
     <>

@@ -59,14 +59,16 @@ const Wrapper = styled.div`
   }
   .icons {
     display: flex;
+    flex-wrap: wrap;
+    justify: space-between;
 
-    padding: 0.2rem 0.5rem;
     gap: 1rem;
   }
   .ico {
     color: var(--clr-primary-7);
   }
   .inner-icon {
+    flex: 0 0 calc(33.3% - 2rem);
     padding-top: 1rem;
     border-radius: var(--radius);
     background: linear-gradient(
@@ -127,7 +129,13 @@ const Wrapper = styled.div`
   .approve h5 {
     color: green;
   }
-
+  .refresh {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+  }
   @media screen and (min-width: 800px) {
     .landing {
       grid-template-columns: 1fr 400px;

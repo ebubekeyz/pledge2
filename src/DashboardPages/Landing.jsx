@@ -1,13 +1,21 @@
-import { FaClock, FaEye, FaEyeSlash, FaMoneyBill } from 'react-icons/fa6';
-import { Link, redirect } from 'react-router-dom';
+import {
+  FaClock,
+  FaEye,
+  FaEyeSlash,
+  FaIdCard,
+  FaMoneyBill,
+  FaReceipt,
+  FaSdCard,
+} from 'react-icons/fa6';
+import { Link, redirect, useLocation } from 'react-router-dom';
 import Wrapper from '../assets/DashboardWrapper/Landing';
 import { useSelector } from 'react-redux';
 import { customFetch } from '../utils';
 import { formatPrice } from '../utils';
 import moment from 'moment';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FiRefreshCcw } from 'react-icons/fi';
-import { FaArrowAltCircleDown } from 'react-icons/fa';
+import { FaArrowAltCircleDown, FaRegIdCard } from 'react-icons/fa';
 
 export const loader = (store) => async () => {
   const user = store.getState().userState.user;
@@ -43,9 +51,6 @@ const Landing = () => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
 
-  // const realDeposit = Object.values(deposit);
-  // const num = Object.values(deposit).length - 1;
-  // const { amount, accountName, createdAt, status } = deposit[num];
 
   return (
     <Wrapper>
@@ -74,8 +79,9 @@ const Landing = () => {
           <p>
             Balance Updated at <span>{moment().format('h:mm a')}</span>
           </p>
-          <p>
-            <FiRefreshCcw onClick={reload} style={{ cursor: 'pointer' }} />
+          <p onClick={reload} style={{ cursor: 'pointer' }} className="refresh">
+            <FiRefreshCcw />
+            <span style={{ fontSize: '0.8rem' }}>Refresh Balance</span>
           </p>
         </article>
 
@@ -83,26 +89,31 @@ const Landing = () => {
           <h4>Services</h4>
 
           <div className="icons">
-            <a href="/dashboard/sendMoney" className="inner-icon">
+            <Link to="/dashboard/sendMoney" className="inner-icon">
               <FaMoneyBill className="ico" />
               <p>Send Money</p>
-            </a>
+            </Link>
 
-            <a href="/dashboard/transaction" className="inner-icon">
-              <FaClock className="ico" />
+            <Link to="/dashboard/transaction" className="inner-icon">
+              <FaReceipt className="ico" />
               <p>Transactions</p>
-            </a>
+            </Link>
+
+            <Link to="/dashboard/cards" className="inner-icon">
+              <FaRegIdCard className="ico" />
+              <p>Card</p>
+            </Link>
 
             {user.role === 'admin' || user.role === 'owner' ? (
-              <a href="/dashboard/adminDeposit" className="inner-icon">
-                <FaClock className="ico" />
+              <Link to="/dashboard/adminDeposit" className="inner-icon">
+                <FaMoneyBill className="ico" />
                 <p>Deposit</p>
-              </a>
+              </Link>
             ) : (
-              <a href="/dashboard/deposit" className="inner-icon">
-                <FaClock className="ico" />
+              <Link to="/dashboard/deposit" className="inner-icon">
+                <FaMoneyBill className="ico" />
                 <p>Deposit</p>
-              </a>
+              </Link>
             )}
           </div>
         </article>

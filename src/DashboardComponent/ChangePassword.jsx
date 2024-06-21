@@ -1,27 +1,26 @@
-import { Form } from 'react-router-dom';
-import Wrapper from '../assets/DashboardWrapper/AdminDeposit';
+import { Form, useLoaderData } from 'react-router-dom';
+import Wrapper from '../assets/DashboardWrapper/Security';
 import { FormInput, SubmitBtn } from '../components';
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { customFetch } from '../utils';
+import { useSelector } from 'react-redux';
+import { loginUser } from '../features/user/userSlice';
 
 export const action =
   (store) =>
   async ({ request }) => {
     const alert = document.querySelector('.form-alert');
-
     const formData = await request.formData();
-    const { user, balance } = store.getState().userState;
+    const { user } = store.getState().userState;
     const data = Object.fromEntries(formData);
 
     try {
-      const resp = await customFetch.post('/addFund', data, {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
-
-      alert.innerHTML = `Deposit Successful`;
+      const resp = await customFetch.patch(
+        `/auth/${data.user2}/passwordReset`,
+        data
+      );
+      store.dispatch(loginUser(resp.data));
+      alert.innerHTML = resp.data.msg;
       alert.style.background = 'var(--clr-primary-8)';
       setTimeout(() => {
         alert.innerHTML = '';
@@ -31,7 +30,7 @@ export const action =
       return null;
     } catch (error) {
       const errorMessage =
-        error?.resp?.data?.msg || 'please double check your credentials';
+        error.resp.data.msg || 'please double check your credentials';
       console.log(errorMessage);
       alert.innerHTML = errorMessage;
       alert.style.background = 'var(--clr-primary-8)';
@@ -44,7 +43,8 @@ export const action =
     }
   };
 
-const AdminDeposit = () => {
+const ChangePassword = () => {
+  const { allUsers, user } = useSelector((state) => state.userState);
   const select = () => {
     let x, i, j, l, ll, selElmnt, a, b, c;
     /* Look for any elements with the class "custom-select": */
@@ -128,6 +128,8 @@ const AdminDeposit = () => {
       }
     }
 
+    /* If the user clicks anywhere outside the select box,
+then close all select boxes: */
     document.addEventListener('click', closeAllSelect);
   };
 
@@ -135,90 +137,39 @@ const AdminDeposit = () => {
     select();
   }, []);
 
-  const { user, allUsers } = useSelector((state) => state.userState);
-
   return (
     <Wrapper>
-      <div className="deposit">
-        <div className="form-alert"></div>
-        <Form method="post">
-          <h4 className="title">Deposit Money</h4>
-          <FormInput
-            name="accountName"
-            placeholder="Type any Name"
-            label="Sender Name"
-            type="text"
-          />
+      <div className="form-alert"></div>
+      <Form method="patch" className="account">
+        <h4>Change User Password</h4>
 
-          <span className="label">Select Account you want to Deposit into</span>
-          <div className="custom-select">
-            <select name="user" id="ms" className="">
-              {Object.values(allUsers).map((item) => {
-                const { _id, firstName, lastName } = item;
-                return (
-                  <option key={_id} value={_id}>
-                    {firstName} {lastName}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
+        <span className="label">Select User</span>
+        <div className="custom-select">
+          <select name="user2" id="ms" className="">
+            {Object.values(allUsers).map((item) => {
+              const { _id, firstName, lastName } = item;
+              return (
+                <option key={_id} value={_id}>
+                  {firstName} {lastName}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+        <FormInput
+          name="newPassword"
+          placeholder="New Password"
+          type="password"
+        />
+        <FormInput
+          name="password"
+          placeholder="Confirm Password"
+          type="password"
+        />
 
-          <input
-            type="text"
-            name="accountNumber"
-            placeholder="Account Number"
-            defaultValue={user.accountNumber}
-            hidden
-          />
-
-          <span className="label">Receiver's Bank</span>
-          <div className="custom-select">
-            <select name="bank" id="ms" className="">
-              <option value="">Choose Bank</option>
-              <option value="Bank Of America">Bank Of America</option>
-              <option value="Capital One">Capital One</option>
-              <option value="Chase Bank (Jp Morgan Chase)">
-                Chase Bank (Jp Morgan Chase)
-              </option>
-              <option value="Citibank">Citibank</option>
-              <option value="Fifth Third Bank">Fifth Third Bank</option>
-              <option value="HSBC">HSBC</option>
-              <option value="PNC Bank">PNC Bank</option>
-              <option value="Santander">Santander</option>
-              <option value="Truist Bank">Truist Bank</option>
-              <option value="U.S. Bancorp">U.S. Bancorp</option>
-              <option value="USAA">USAA</option>
-              <option value="Wells Fargo Bank">Wells Fargo Bank</option>
-            </select>
-          </div>
-
-          {user.role === 'admin' || user.role === 'owner' ? (
-            <div className="">
-              <FormInput
-                placeholder="12th June 2024"
-                name="date1"
-                label="Date1"
-              />
-              <FormInput
-                placeholder="11:57am, 12/06/2024"
-                name="date2"
-                label="label2"
-              />
-            </div>
-          ) : (
-            ''
-          )}
-          <FormInput
-            name="amount"
-            placeholder="Amount"
-            type="text"
-            label="amount"
-          />
-          <SubmitBtn text="deposit" />
-        </Form>
-      </div>
+        <SubmitBtn text="save" />
+      </Form>
     </Wrapper>
   );
 };
-export default AdminDeposit;
+export default ChangePassword;

@@ -9,21 +9,17 @@ const Wrapper = styled.section`
 
   .logo-img {
     width: 2rem;
-  }
-
-  .logo {
-    display: grid;
-    justify-content: center;
-    grid-template-columns: 1fr;
-
-    position: absolute;
-    top: 30%;
-    left: 50%;
-    width: 100%;
     text-align: center;
-    transform: translate(-50%, -50%);
+  }
+  .change {
+    display: none;
+  }
+  .logo {
+    text-align: center;
+    margin: 0 auto;
+    display: grid;
+    gap: 1rem;
     place-items: center;
-    color: var(--clr-grey-10);
   }
 
   .logo span {
